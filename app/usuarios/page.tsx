@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowUpDown, ChevronDown, MoreHorizontal, Search, Trash, UserCog, UserPlus } from "lucide-react"
+import { ArrowUpDown, ChevronDown, MoreHorizontal, Search, Shield, Trash, UserCog, UserPlus } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -150,7 +150,15 @@ export default function UsuariosPage() {
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">{user.id}</TableCell>
                       <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.nombre || "-"}</TableCell>
+                      <TableCell>
+                          <Link
+                            href={`/permisos/${user.id}`}
+                            className="text-primary hover:underline flex items-center gap-1"
+                          >
+                            {user.nombre || "-"}
+                            <Shield className="h-3.5 w-3.5 ml-1" />
+                          </Link>
+                        </TableCell>
                       <TableCell>
                         <Badge className={getRoleBadgeColor(user.role)}>{translateRole(user.role)}</Badge>
                       </TableCell>

@@ -68,3 +68,26 @@ export type Empresa = {
     limitStock:number
   };
   
+  export type Navegacion = {
+    id: number;
+    nombre: string;
+    ruta: string;
+    icono: string;
+  };
+  export type IconKey = 'Home' | 'Package' | 'ClipboardList' | 'Users' | 'Settings';
+
+
+  type Permiso = {
+    id: number;
+    nombre: string;
+    ver: boolean;
+    editar: boolean;
+    eliminar: boolean;
+    crear: boolean;
+  };
+  
+  export type PermisosPorUsuario = {
+    userId: number;
+    permisos: Permiso[];
+  };
+  

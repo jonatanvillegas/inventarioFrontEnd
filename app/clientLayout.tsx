@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   Box,
   ClipboardList,
@@ -24,11 +24,34 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import "./globals.css"
 import { usePathname } from "next/navigation"
 import { removeCookie } from "typescript-cookie"
+import useNavegacionStore from "./store/useNavegacionStore"
+import { SpinnerLoad } from "@/components/SpinnerLoad"
+import NavComponents from "@/components/NavComponents"
+import { IconKey, Navegacion } from "./types/types"
 
 
 export default function ClientLayout({children}: {children: React.ReactNode}) {
-    const pathname = usePathname(); // Obtiene la ruta actual
+  const pathname = usePathname(); // Obtiene la ruta actual
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [loading, setLoading] = useState(true);
+  const [navegacionData, setNavegacionData] = useState<Navegacion[]>([]);
+  const {navegacion,fetchNavegacion}= useNavegacionStore();
+
+  useEffect(() => {
+    const storedNavegacion = localStorage.getItem('navegacion');
+    if (storedNavegacion) {
+      setNavegacionData(JSON.parse(storedNavegacion));
+      setLoading(false);
+    } else {
+      const fetchData = async () => {
+        await fetchNavegacion();
+        setNavegacionData(navegacion);  
+        localStorage.setItem('navegacion', JSON.stringify(navegacion));  
+        setLoading(false);
+      };
+      fetchData();
+    }
+  }, [fetchNavegacion, navegacion]);
 
   const handleLogout = () => {
     removeCookie("token");
@@ -60,36 +83,17 @@ export default function ClientLayout({children}: {children: React.ReactNode}) {
             </Button>
           </div>
           <nav className="flex flex-col gap-1 p-4">
-            <Button variant={pathname === "/inicio" ? "secondary" : "ghost"}className="justify-start gap-2" asChild>
-              <a href="/inicio">
-                <Home className="h-5 w-5" />
-                <span>Inicio</span>
-              </a>
-            </Button>
-            <Button variant={pathname === "/productos" ? "secondary" : "ghost"} className="justify-start gap-2" asChild>
-              <a href="/productos">
-                <Package className="h-5 w-5" />
-                <span>Productos</span>
-              </a>
-            </Button>
-            <Button variant={pathname === "/categoria" ? "secondary" : "ghost"} className="justify-start gap-2" asChild>
-              <a href="/categoria">
-                <ClipboardList className="h-5 w-5" />
-                <span>Categorías</span>
-              </a>
-            </Button>
-            <Button variant={pathname === "/usuarios" ? "secondary" : "ghost"} className="justify-start gap-2" asChild>
-              <a href="/usuarios">
-                <Users className="h-5 w-5" />
-                <span>Usuarios</span>
-              </a>
-            </Button>
-            <Button variant={pathname === "/configuracion" ? "secondary" : "ghost"} className="justify-start gap-2" asChild>
-              <a href="/configuracion">
-                <Settings className="h-5 w-5" />
-                <span>Configuración</span>
-              </a>
-            </Button>
+              {/* Navegacion */}
+            {navegacionData && navegacionData.map((nav)=>(
+              <NavComponents
+                ruta={nav.ruta}
+                pathname={pathname}
+                icono={nav.icono as IconKey}
+                id={nav.id}
+                nombre={nav.nombre}
+                key={nav.id}
+              />
+            ))}
             <div className="mt-auto pt-4">
               <Button
                 variant="ghost"
