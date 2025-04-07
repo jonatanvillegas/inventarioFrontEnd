@@ -38,7 +38,13 @@ export type Producto = {
     imagen?: string;  // Imagen almacenada como una cadena de texto (url o base64)
     createdAt: string;  // Fecha en formato ISO 8601
 }
-
+export type productoActualizado = {
+  id: number;
+  nombre: string;
+  categoriaId: string;
+  stock: number;
+  precio: number;
+}
 export type ProductoDTO = Omit<Producto,"categoria_nombre"|"createdAt"|"id">
   //empresa DTO
 export type Empresa = {

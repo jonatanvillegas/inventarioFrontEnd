@@ -1,13 +1,14 @@
 import { create } from 'zustand';
 import axios from "axios";
 import { getCookie } from "typescript-cookie";
-import { Producto, ProductoDTO } from '../types/types';
+import { Producto, productoActualizado, ProductoDTO } from '../types/types';
 
 interface ProductoState {
     productos: Producto[];
     loading: boolean;
     fetchProductos: () => Promise<void>;
     addProducto: (producto: ProductoDTO) => Promise<void>;
+    editProducto: (producto: productoActualizado) => Promise<void>;
 }
 
 const useProductoStore = create<ProductoState>((set, get) => ({
@@ -24,7 +25,6 @@ const useProductoStore = create<ProductoState>((set, get) => ({
                 }
             })
             const data: Producto[] = await response.data.Productos;
-            console.log(data)
             set({ productos: data, loading: false });
         } catch (error) {
             console.error("Error al obtener categorías", error);
@@ -41,6 +41,28 @@ const useProductoStore = create<ProductoState>((set, get) => ({
                 stock: producto.stock,
                 imagen: null,
                 categoriaId: producto.categoriaId
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            // Llamar a fetchProductos para actualizar la lista
+            await get().fetchProductos();
+
+        } catch (error) {
+            set({ loading: false });
+        }
+    },
+    editProducto: async (producto) => {
+        try {
+            const token = getCookie('token');
+            await axios.put(`http://localhost:4000/producto/actualizar/${producto.id}`, {
+                nombre: producto.nombre,
+                descripcion: 'descripcion G',
+                precio: producto.precio,
+                stock: producto.stock,
+                categoriaId: Number.parseInt(producto.categoriaId)
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`
