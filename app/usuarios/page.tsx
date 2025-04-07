@@ -154,6 +154,7 @@ export default function UsuariosPage() {
                           <Link
                             href={`/permisos/${user.id}`}
                             className="text-primary hover:underline flex items-center gap-1"
+                            passHref
                           >
                             {user.nombre || "-"}
                             <Shield className="h-3.5 w-3.5 ml-1" />

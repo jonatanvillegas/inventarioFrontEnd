@@ -69,15 +69,20 @@ export type Empresa = {
   };
   
   export type Navegacion = {
-    id: number;
-    nombre: string;
-    ruta: string;
-    icono: string;
-  };
+  id: number;
+  nombre: string;
+  ruta: string;
+  icono: string;
+  ver: boolean;
+  editar: boolean;
+  eliminar: boolean;
+  crear: boolean;
+};
+
   export type IconKey = 'Home' | 'Package' | 'ClipboardList' | 'Users' | 'Settings';
 
 
-  type Permiso = {
+  export type Permiso = {
     id: number;
     nombre: string;
     ver: boolean;

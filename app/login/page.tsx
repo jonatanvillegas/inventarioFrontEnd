@@ -26,12 +26,17 @@ export default function () {
 
             const response = await axios.post("http://localhost:4000/login", { email, password });
 
+            console.log(response)
             if (response.data.token) {
                 // 🔹 Guardar el token en cookies
                 setCookie("token", response.data.token, {
                   expires: 1, // Expira en 1 día
                   secure: process.env.NODE_ENV === "production",
                 });
+                setCookie("id", response.data.usuario.id, {
+                    expires: 1, // Expira en 1 día
+                    secure: process.env.NODE_ENV === "production",
+                  });
             }
             // Simulación de login
             setTimeout(() => {

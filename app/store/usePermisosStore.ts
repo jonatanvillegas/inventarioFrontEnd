@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { PermisosPorUsuario } from '../types/types'
+import { Permiso, PermisosPorUsuario } from '../types/types'
 import { getCookie } from 'typescript-cookie'
 import axios from 'axios'
 
@@ -7,6 +7,7 @@ interface permisosState {
     permisosUsuario: PermisosPorUsuario;
     loading: boolean;
     fetchPermisos: (id: number) => Promise<void>;
+    editPermisos: (permisos:PermisosPorUsuario)=> Promise<void>;
 }
 
 const usePermisosStore = create<permisosState>((set) => ({
@@ -31,6 +32,22 @@ const usePermisosStore = create<permisosState>((set) => ({
             set({ loading: false });
         }
     },
+    editPermisos: async (permisos)=>{
+        try {
+            const token = getCookie("token");
+             await axios.put(`http://localhost:4000/editarpermiso`,{
+                ...permisos}, // Desestructura 
+                 {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+        } catch (error) {
+            console.error("Error al obtener la navegacion", error);
+            set({ loading: false });
+        }
+    }
 }))
 
 export default usePermisosStore

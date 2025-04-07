@@ -23,9 +23,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import "./globals.css"
 import { usePathname } from "next/navigation"
-import { removeCookie } from "typescript-cookie"
+import { getCookie, removeCookie } from "typescript-cookie"
 import useNavegacionStore from "./store/useNavegacionStore"
-import { SpinnerLoad } from "@/components/SpinnerLoad"
 import NavComponents from "@/components/NavComponents"
 import { IconKey, Navegacion } from "./types/types"
 
@@ -38,19 +37,17 @@ export default function ClientLayout({children}: {children: React.ReactNode}) {
   const {navegacion,fetchNavegacion}= useNavegacionStore();
 
   useEffect(() => {
-    const storedNavegacion = localStorage.getItem('navegacion');
-    if (storedNavegacion) {
-      setNavegacionData(JSON.parse(storedNavegacion));
-      setLoading(false);
-    } else {
+
       const fetchData = async () => {
-        await fetchNavegacion();
+        const tokenID = getCookie("id");
+        if (!tokenID) return
+        
+        await fetchNavegacion(tokenID);
         setNavegacionData(navegacion);  
-        localStorage.setItem('navegacion', JSON.stringify(navegacion));  
         setLoading(false);
       };
       fetchData();
-    }
+    
   }, [fetchNavegacion, navegacion]);
 
   const handleLogout = () => {

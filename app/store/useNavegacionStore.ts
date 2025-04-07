@@ -6,16 +6,16 @@ import axios from "axios";
 interface navegacionState {
     navegacion: Navegacion[],
     loading: boolean;
-    fetchNavegacion: () => Promise<void>;
+    fetchNavegacion: (id:string) => Promise<void>;
 }
 
 const useNavegacionStore = create<navegacionState>((set) => ({
     navegacion:[],
     loading:false,
-    fetchNavegacion:async()=> {
+    fetchNavegacion:async(id)=> {
         try {
             const token = getCookie("token");
-            const response = await axios.get("http://localhost:4000/navegacion/datos",{
+            const response = await axios.get(`http://localhost:4000/navegacion/datos/${id}`,{
                 headers:{
                      Authorization: `Bearer ${token}`
                 }
