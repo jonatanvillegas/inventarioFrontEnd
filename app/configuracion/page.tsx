@@ -9,7 +9,6 @@ import Image from "next/image"
 import { z } from "zod"
 import useEmpresaStore from "../store/useEmpresaStore"
 import { useEffect, useState } from "react"
-import { Spinner } from "@/components/ui/spinner"
 import { SpinnerLoad } from "@/components/SpinnerLoad"
 
 export default function () {
@@ -84,8 +83,6 @@ export default function () {
     } else {
       console.error("Errores de validación:", result.error.errors);
     }
-
-    console.log(result)
   }
   return (
     <div className="flex flex-col gap-6">

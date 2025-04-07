@@ -10,8 +10,11 @@ import Link from "next/link"
 import usePermisosStore from "@/app/store/usePermisosStore"
 import { Permiso } from "@/app/types/types"
 import { toast } from "sonner"
+import { useRouter } from 'next/navigation'
 
 export default function PermisosPage({ params }: { params: Promise<{ userId: string }> }) {
+
+    const router = useRouter()
 
     const { userId } = use(params); 
     const [selectedUserId, setSelectedUserId] = useState<string>(userId || "")
@@ -63,8 +66,9 @@ export default function PermisosPage({ params }: { params: Promise<{ userId: str
         // Simular guardado en la base de datos
         setTimeout(async() => {
            await editPermisos(EditPermisos)
-            setIsSaving(false)
-              toast( "Los permisos del usuario han sido actualizados correctamente.")
+           setIsSaving(false)
+           toast( "Los permisos del usuario han sido actualizados correctamente.")
+           router.refresh()
         }, 1000)
     }
 

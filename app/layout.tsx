@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import LayoutClient from "@/components/LayoutClient";
 import { Toaster } from "@/components/ui/sonner"
+import { getNavegacionData } from "@/lib/actions";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,11 +25,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const navegacionData = await getNavegacionData();
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -40,7 +43,7 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-           <LayoutClient>{children}</LayoutClient>
+           <LayoutClient navegacionData={navegacionData}>{children}</LayoutClient>
            <Toaster />
           </ThemeProvider>
       </body>

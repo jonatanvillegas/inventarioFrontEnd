@@ -28,12 +28,15 @@ import useNavegacionStore from "./store/useNavegacionStore"
 import NavComponents from "@/components/NavComponents"
 import { IconKey, Navegacion } from "./types/types"
 
+interface LayoutProps {
+  children: React.ReactNode;
+  navegacionData: Navegacion[]; // Recibe los datos de navegación como props
+}
 
-export default function ClientLayout({children}: {children: React.ReactNode}) {
+export default function ClientLayout({ children, navegacionData }: LayoutProps) {
   const pathname = usePathname(); // Obtiene la ruta actual
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [loading, setLoading] = useState(true);
-  const [navegacionData, setNavegacionData] = useState<Navegacion[]>([]);
   const {navegacion,fetchNavegacion}= useNavegacionStore();
 
   useEffect(() => {
@@ -43,7 +46,6 @@ export default function ClientLayout({children}: {children: React.ReactNode}) {
         if (!tokenID) return
         
         await fetchNavegacion(tokenID);
-        setNavegacionData(navegacion);  
         setLoading(false);
       };
       fetchData();
