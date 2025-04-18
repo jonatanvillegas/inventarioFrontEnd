@@ -4,6 +4,7 @@
 import { cookies } from "next/headers"
 import axios from "axios"
 import { Navegacion } from "@/app/types/types";
+import usePermisosStore from "@/app/store/usePermisosStore";
 
 export async function getUsers() {
   try {
@@ -38,6 +39,7 @@ export async function getNavegacionData(): Promise<Navegacion[]> {
         Authorization: `Bearer ${token}`,
       },
     });
+
 
     return response.data; // Retornamos los datos de navegación
   } catch (error) {

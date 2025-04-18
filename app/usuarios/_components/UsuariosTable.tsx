@@ -17,8 +17,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { User } from "@/app/types/types"
+import { usePermisosRuta } from "@/hook/usePermisosRuta"
 
 export default function UsuariosTable({ users }: { users: User[] }) {
+
+  const permisos = usePermisosRuta()
+
   const [searchTerm, setSearchTerm] = useState("")
 
   // Filtrar usuarios basado en el término de búsqueda
@@ -62,12 +66,14 @@ export default function UsuariosTable({ users }: { users: User[] }) {
     <div className="container py-6 space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h1 className="text-2xl font-bold tracking-tight">Usuarios</h1>
-        <Button asChild>
-          <Link href="/usuarios/crear">
-            <UserPlus className="mr-2 h-4 w-4" />
-            Crear Usuario
-          </Link>
-        </Button>
+        {permisos?.crear ? (
+          <Button asChild>
+            <Link href="/usuarios/crear">
+              <UserPlus className="mr-2 h-4 w-4" />
+              Crear Usuario
+            </Link>
+          </Button>
+        ) : ""}
       </div>
 
       <Card>
@@ -134,15 +140,15 @@ export default function UsuariosTable({ users }: { users: User[] }) {
                       <TableCell className="font-medium">{user.id}</TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>
-                          <Link
-                            href={`/permisos/${user.id}`}
-                            className="text-primary hover:underline flex items-center gap-1"
-                            passHref
-                          >
-                            {user.nombre || "-"}
-                            <Shield className="h-3.5 w-3.5 ml-1" />
-                          </Link>
-                        </TableCell>
+                        <Link
+                          href={`/permisos/${user.id}`}
+                          className="text-primary hover:underline flex items-center gap-1"
+                          passHref
+                        >
+                          {user.nombre || "-"}
+                          <Shield className="h-3.5 w-3.5 ml-1" />
+                        </Link>
+                      </TableCell>
                       <TableCell>
                         <Badge className={getRoleBadgeColor(user.role)}>{translateRole(user.role)}</Badge>
                       </TableCell>

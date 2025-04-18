@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { Permiso, PermisosPorUsuario } from '../types/types'
+import { PermisosPorUsuario } from '../types/types'
 import { getCookie } from 'typescript-cookie'
 import axios from 'axios'
 

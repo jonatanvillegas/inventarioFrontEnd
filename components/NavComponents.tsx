@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button } from './ui/button';
-import { Home, Package, ClipboardList, Users, Settings, } from "lucide-react"
+import { Home, Package, ClipboardList, Users, Settings,ShoppingCart } from "lucide-react"
 import { IconKey } from '@/app/types/types';
 
 const iconMap = {
@@ -9,6 +9,7 @@ const iconMap = {
     ClipboardList: ClipboardList,
     Users: Users,
     Settings: Settings,
+    ShoppingCart:ShoppingCart
 };
 interface Props {
     id: number;

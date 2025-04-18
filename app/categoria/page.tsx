@@ -17,10 +17,13 @@ import { CreateCategoriaModal } from "@/components/CategoriaModel"
 import useCategoriaStore from "../store/useCategoriaStore"
 import { UpdateCategoriaModal } from "@/components/updateCategoriaModel"
 import { SpinnerLoad } from "@/components/SpinnerLoad"
+import { usePermisosRuta } from "@/hook/usePermisosRuta"
 
 // Datos de ejemplo para la tabla de categorías
 
 export default function CategoriasPage() {
+    const permisos = usePermisosRuta()
+
     const [searchTerm, setSearchTerm] = useState("")
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isModalOpenE, setIsModalOpenE] = useState(false)
@@ -53,10 +56,12 @@ export default function CategoriasPage() {
         <div className="container py-6 space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <h1 className="text-2xl font-bold tracking-tight">Categorías</h1>
-                <Button onClick={() => setIsModalOpen(true)}>
-                    <FolderPlus className="mr-2 h-4 w-4" />
-                    Nueva Categoría
-                </Button>
+                {permisos?.crear ? (
+                    <Button onClick={() => setIsModalOpen(true)}>
+                        <FolderPlus className="mr-2 h-4 w-4" />
+                        Nueva Categoría
+                    </Button>
+                ) : ""}
             </div>
 
             <Card>
@@ -123,6 +128,7 @@ export default function CategoriasPage() {
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
+                                                        {permisos?.editar ? (
                                                         <DropdownMenuItem
                                                             onClick={() => {
                                                                 setCategoria({
@@ -136,6 +142,7 @@ export default function CategoriasPage() {
                                                             <Pencil className="mr-2 h-4 w-4" />
                                                             Editar
                                                         </DropdownMenuItem>
+                                                        ):""}
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </TableCell>

@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import axios from "axios"
 import { setCookie } from "typescript-cookie"
+import { toast } from "sonner"
 
 export default function () {
     const [showPassword, setShowPassword] = useState(false)
@@ -20,34 +21,51 @@ export default function () {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+      
+        setIsLoading(true)
+      
         try {
-
-            setIsLoading(true)
-
-            const response = await axios.post("http://localhost:4000/login", { email, password });
-
-            console.log(response)
-            if (response.data.token) {
-                // 🔹 Guardar el token en cookies
-                setCookie("token", response.data.token, {
-                  expires: 1, // Expira en 1 día
-                  secure: process.env.NODE_ENV === "production",
-                });
-                setCookie("id", response.data.usuario.id, {
-                    expires: 1, // Expira en 1 día
-                    secure: process.env.NODE_ENV === "production",
-                  });
-            }
-            // Simulación de login
+          const { data } = await axios.post("http://localhost:4000/login", {
+            email,
+            password,
+          })
+      
+          const { token, usuario, mensaje } = data
+      
+          if (token && usuario?.id) {
+            // Guardar el token y el ID del usuario en cookies
+            setCookie("token", token, {
+              expires: 1,
+              secure: process.env.NODE_ENV === "production",
+            })
+      
+            setCookie("id", usuario.id, {
+              expires: 1,
+              secure: process.env.NODE_ENV === "production",
+            })
+      
+            // Mostrar mensaje de éxito
+            toast.success(mensaje, {
+              description: "Redirigiendo al panel principal...",
+              className: "bg-emerald-100 text-emerald-800 border border-emerald-300",
+            })
+      
+            // Redirigir después de un breve tiempo
             setTimeout(() => {
-                setIsLoading(false)
-                window.location.href = "/inicio"
+              window.location.href = "/inicio"
             }, 1500)
-
-        } catch (error) {
-
+          } else {
+            toast.error("Credenciales inválidas o token no recibido")
+          }
+        } catch (error: any) {
+          const mensajeError = error?.response?.data?.mensaje || "Error al iniciar sesión"
+          toast.error(mensajeError, {
+            className: "bg-red-100 text-red-800 border border-red-300",
+          })
+        } finally {
+          setIsLoading(false)
         }
-    }
+      }
     
     return (
         <div className="min-h-screen grid lg:grid-cols-2">

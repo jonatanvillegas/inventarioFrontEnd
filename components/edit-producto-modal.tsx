@@ -196,7 +196,7 @@ export function UpdateProductoModal({
                           step="0.01"
                           min="0.01"
                           {...field}
-                          onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                          onChange={(e) => field.onChange(+e.target.valueAsNumber)}
                         />
                       </div>
                     </FormControl>

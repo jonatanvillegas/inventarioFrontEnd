@@ -7,6 +7,8 @@ interface navegacionState {
     navegacion: Navegacion[],
     loading: boolean;
     fetchNavegacion: (id:string) => Promise<void>;
+    permisosPorRuta: Navegacion[]
+    setPermisos: (data: Navegacion[]) => void
 }
 
 const useNavegacionStore = create<navegacionState>((set) => ({
@@ -28,6 +30,8 @@ const useNavegacionStore = create<navegacionState>((set) => ({
             set({ loading: false });
         }
     },
+    permisosPorRuta: [],
+    setPermisos: (data) => set({ permisosPorRuta: data }),
 }))
 
 export default useNavegacionStore

@@ -34,26 +34,35 @@ const useProductoStore = create<ProductoState>((set, get) => ({
     addProducto: async (producto) => {
         try {
             const token = getCookie('token');
-            await axios.post("http://localhost:4000/producto/create", {
-                nombre: producto.nombre,
-                descripcion: 'descripcion G',
-                precio: producto.precio,
-                stock: producto.stock,
-                imagen: null,
-                categoriaId: producto.categoriaId
-            }, {
+    
+            const formData = new FormData();
+            if (producto.imagen) {
+                formData.append("imagen", producto.imagen);
+              } else {
+                throw new Error("La imagen es requerida");
+              }
+
+            formData.append("nombre", producto.nombre);
+            formData.append("descripcion", 'descripcion G');
+            formData.append("precio", producto.precio.toString());
+            formData.append("stock", producto.stock.toString());
+            formData.append("categoriaId", producto.categoriaId.toString());
+
+            await axios.post("http://localhost:4000/producto/create", formData, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-            })
-
+            });
+    
             // Llamar a fetchProductos para actualizar la lista
             await get().fetchProductos();
-
+    
         } catch (error) {
+            console.log("Error creando producto", error);
             set({ loading: false });
         }
     },
+    
     editProducto: async (producto) => {
         try {
             const token = getCookie('token');

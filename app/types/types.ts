@@ -51,7 +51,7 @@ export type Empresa = {
     id: number;
     nombre: string;
     descripcion: string;
-    email: string;
+    email: File;
     telefono: string;
     direccion: string;
     ciudad: string;
@@ -85,7 +85,7 @@ export type Empresa = {
   crear: boolean;
 };
 
-  export type IconKey = 'Home' | 'Package' | 'ClipboardList' | 'Users' | 'Settings';
+  export type IconKey = 'Home' | 'Package' | 'ClipboardList' | 'Users' | 'Settings' | 'ShoppingCart';
 
 
   export type Permiso = {

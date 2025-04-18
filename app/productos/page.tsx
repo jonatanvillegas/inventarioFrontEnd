@@ -17,10 +17,15 @@ import useCategoriaStore from "../store/useCategoriaStore"
 import useProductoStore from "../store/useProductoStore"
 import { SpinnerLoad } from "@/components/SpinnerLoad"
 import { UpdateProductoModal } from "@/components/edit-producto-modal"
+import { usePermisosRuta } from "@/hook/usePermisosRuta"
+import ImageThumbnail from "@/components/ImagenModal"
 
 
 // flex flex-col sm:flex-row sm:items-center sm:justify-between  gap-4 mb-4
 export default function () {
+
+    const permisos = usePermisosRuta()
+
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isModalAbierto, setIsModalAbierto] = useState(false)
     const [productoSeleccionado,setproductoSeleccionado]= useState({
@@ -71,10 +76,12 @@ export default function () {
     return (
         <div>
             <div className="mb-4 flex-row sm:flex-row sm:items-center sm:justify-between text-end">
-                <Button className="sm:w-auto w-full gap-1" onClick={() => setIsModalOpen(true)}>
+                {permisos?.crear ? (
+                    <Button className="sm:w-auto w-full gap-1" onClick={() => setIsModalOpen(true)}>
                     <Plus className="h-4 w-4" />
                     Nuevo producto
                 </Button>
+                ):""}
             </div>
             {/* Products table */}
             <div className=" max-w-96 md:max-w-full overflow-x-auto">
@@ -84,12 +91,13 @@ export default function () {
                         <CardDescription>Lista de todos los productos en inventario.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <div className="rounded-md border max-h-[400px] overflow-y-auto">
+                        <div className="rounded-md  max-h-[400px] overflow-y-auto">
                             <Table className="min-w-max">
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>ID</TableHead>
                                         <TableHead>Producto</TableHead>
+                                        <TableHead>Imagen</TableHead>
                                         <TableHead>Categoría</TableHead>
                                         <TableHead>Stock</TableHead>
                                         <TableHead>Precio</TableHead>
@@ -102,6 +110,9 @@ export default function () {
                                         <TableRow key={producto.id}>
                                             <TableCell className="font-medium">{producto.id}</TableCell>
                                             <TableCell>{producto.nombre}</TableCell>
+                                            <TableCell>
+                                                <ImageThumbnail src={producto.imagen ?? "/placeholder.svg?height=64&width=64"} alt={producto.nombre} />
+                                            </TableCell>
                                             <TableCell>{producto.categoria_nombre}</TableCell>
                                             <TableCell>{producto.stock}</TableCell>
                                             <TableCell>C$ {producto.precio}</TableCell>
@@ -116,7 +127,8 @@ export default function () {
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="end">
                                                         <DropdownMenuLabel>Acciones</DropdownMenuLabel>
-                                                        <DropdownMenuItem
+                                                        {permisos?.editar ? (
+                                                            <DropdownMenuItem
                                                             onClick={() => {
                                                                 setproductoSeleccionado({
                                                                     id: producto.id,
@@ -132,6 +144,8 @@ export default function () {
                                                             <Pencil className="mr-2 h-4 w-4" />
                                                             Editar
                                                         </DropdownMenuItem>
+                                                        ):"" }
+                                                        
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </TableCell>

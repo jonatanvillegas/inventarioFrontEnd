@@ -100,7 +100,7 @@ export default function () {
                   limitStock={dataBajoStock.limitStock}
                   precio={producto.precio}
                   stock={producto.stock}
-                  urlImage="/placeholder.svg?height=64&width=64"
+                  urlImage={producto.imagen ?? "/placeholder.svg?height=64&width=64"}
                 />
               ))}
             </div>

@@ -41,19 +41,48 @@ const productoFormSchema = z.object({
     })
     .positive({ message: "El precio debe ser mayor que cero" })
     .multipleOf(0.01, { message: "El precio debe tener máximo 2 decimales" }),
+  imagen: z
+    .instanceof(File)
+    .optional()
+    .refine(
+      (file) => !file || file.size <= 5 * 1024 * 1024,
+      { message: "La imagen no puede pesar más de 5MB" }
+    )
+    .refine(
+      (file) =>
+        !file ||
+        ["image/jpeg", "image/png", "image/webp"].includes(file.type),
+      { message: "El formato debe ser JPG, PNG o WEBP" }
+    ),
 })
 
+
 type ProductoFormValues = z.infer<typeof productoFormSchema>
+
+interface ProductoParaCrear {
+  nombre: string
+  categoriaId: string
+  stock: number
+  precio: number
+  imagen?: string // base64 aquí
+}
+
 
 interface CreateProductoModalProps {
   isOpen: boolean
   onClose: () => void
-  onCreateProducto: (producto: ProductoFormValues) => void
+  onCreateProducto: (producto: ProductoParaCrear) => void
   categorias: { id: number; nombre: string }[]
 }
 
 export function CreateProductoModal({ isOpen, onClose, onCreateProducto, categorias }: CreateProductoModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const [imagen, setImagen] = useState<string | undefined>(undefined)
+
+  const handleImageChange = (e:any) => {
+    setImagen(e.target.files[0]);
+  };
 
   // Configurar el formulario con validación
   const form = useForm<ProductoFormValues>({
@@ -65,13 +94,22 @@ export function CreateProductoModal({ isOpen, onClose, onCreateProducto, categor
     },
   })
 
+
   // Manejar el envío del formulario
   const onSubmit = async (data: ProductoFormValues) => {
     setIsSubmitting(true)
 
     try {
-    
-      onCreateProducto(data)
+      
+      const productoConImagen: ProductoParaCrear = {
+        nombre: data.nombre,
+        categoriaId: data.categoriaId,
+        stock: data.stock,
+        precio: data.precio,
+        imagen: imagen, // ya transformada antes en base64
+      }
+  
+      onCreateProducto(productoConImagen)
       form.reset()
     } catch (error) {
       console.error("Error al crear el producto:", error)
@@ -112,6 +150,44 @@ export function CreateProductoModal({ isOpen, onClose, onCreateProducto, categor
                 )}
               />
             </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              <FormItem>
+                <FormLabel className="text-sm font-medium text-gray-700 mb-1">
+                  Imagen del producto
+                </FormLabel>
+                <FormControl>
+                  <label
+                    htmlFor="imagen"
+                    className="flex items-center justify-center px-4 py-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-sky-500 transition"
+                  >
+                    <svg
+                      className="w-8 h-8 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M3 16l4-4 4 4m0 0l4-4 4 4M4 4h16"
+                      />
+                    </svg>
+                    <span className="ml-3 text-gray-500">Selecciona una imagen</span>
+                    <input
+                      id="imagen"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => handleImageChange(e)}
+                    />
+
+                  </label>
+                </FormControl>
+              </FormItem>
+            </div>
+
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
               {/* Campo Categoría */}
